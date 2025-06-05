@@ -28,7 +28,7 @@ const StatusChecker = () => {
     setError('');
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/status/${ingestionId}`);
+      const response = await axios.get(`http://localhost:5000/status/${ingestionId}`);
       setStatus(response.data);
     } catch (err) {
       setError(err.response?.data?.error || err.message);

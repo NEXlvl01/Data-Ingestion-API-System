@@ -15,6 +15,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Welcome message route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to Data Ingestion API System',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      ingest: '/ingest',
+      status: '/status/:ingestion_id'
+    },
+    documentation: 'API documentation will be available soon'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
@@ -41,7 +55,7 @@ const connectDB = async () => {
 };
 
 // Routes
-app.use('/api', ingestionRoutes);
+app.use('/', ingestionRoutes);
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;

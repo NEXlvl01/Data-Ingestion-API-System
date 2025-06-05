@@ -32,7 +32,7 @@ const IngestionForm = () => {
         throw new Error('Invalid ID format. Please enter comma-separated numbers.');
       }
 
-      const response = await axios.post('http://localhost:5000/api/ingest', {
+      const response = await axios.post('http://localhost:5000/ingest', {
         ids: idArray,
         priority
       });

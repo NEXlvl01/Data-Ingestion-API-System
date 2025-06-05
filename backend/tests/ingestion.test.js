@@ -46,7 +46,7 @@ describe('Data Ingestion API', () => {
     const startTime = Date.now();
     while (Date.now() - startTime < timeout && isProcessing) {
       try {
-        const response = await request(app).get(`/api/status/${ingestionId}`);
+        const response = await request(app).get(`/status/${ingestionId}`);
         if (response.body.batches[0].status === expectedStatus) {
           return true;
         }
@@ -59,10 +59,10 @@ describe('Data Ingestion API', () => {
     return false;
   };
 
-  describe('POST /api/ingest', () => {
+  describe('POST /ingest', () => {
     it('should create a new ingestion request', async () => {
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: [1, 2, 3, 4, 5],
           priority: 'HIGH'
@@ -74,7 +74,7 @@ describe('Data Ingestion API', () => {
 
     it('should validate input data', async () => {
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: [1, 2, 3],
           priority: 'INVALID'
@@ -85,7 +85,7 @@ describe('Data Ingestion API', () => {
 
     it('should validate ID range', async () => {
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: [0, 1, 2],
           priority: 'HIGH'
@@ -96,7 +96,7 @@ describe('Data Ingestion API', () => {
 
     it('should handle empty ID array', async () => {
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: [],
           priority: 'HIGH'
@@ -108,7 +108,7 @@ describe('Data Ingestion API', () => {
 
     it('should handle duplicate IDs', async () => {
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: [1, 1, 2, 2, 3],
           priority: 'HIGH'
@@ -119,7 +119,7 @@ describe('Data Ingestion API', () => {
     });
   });
 
-  describe('GET /api/status/:ingestion_id', () => {
+  describe('GET /status/:ingestion_id', () => {
     it('should return ingestion status', async () => {
       // Create an ingestion request first
       const ingestion = new Ingestion({
@@ -141,7 +141,7 @@ describe('Data Ingestion API', () => {
       await ingestion.save();
 
       const response = await request(app)
-        .get('/api/status/test123');
+        .get('/status/test123');
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('ingestion_id', 'test123');
@@ -151,14 +151,14 @@ describe('Data Ingestion API', () => {
 
     it('should return 404 for non-existent ingestion', async () => {
       const response = await request(app)
-        .get('/api/status/nonexistent');
+        .get('/status/nonexistent');
 
       expect(response.status).toBe(404);
     });
 
     it('should handle invalid ingestion ID format', async () => {
       const response = await request(app)
-        .get('/api/status/invalid@id');
+        .get('/status/invalid@id');
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('error');
@@ -182,7 +182,7 @@ describe('Data Ingestion API', () => {
       expect(firstBatchCompleted).toBe(true);
 
       // Check status immediately after first batch completes
-      const status = await request(app).get('/api/status/rate1');
+      const status = await request(app).get('/status/rate1');
       const completedBatches = status.body.batches.filter(b => b.status === 'completed');
       expect(completedBatches.length).toBe(1);
     });
@@ -214,8 +214,8 @@ describe('Data Ingestion API', () => {
 
       // Check status of both requests
       const [firstStatus, secondStatus] = await Promise.all([
-        request(app).get('/api/status/first'),
-        request(app).get('/api/status/second')
+        request(app).get('/status/first'),
+        request(app).get('/status/second')
       ]);
 
       // First request should be completed
@@ -248,7 +248,7 @@ describe('Data Ingestion API', () => {
       // Create an ingestion request with a large number of IDs
       const largeIds = Array.from({ length: 100 }, (_, i) => i + 1);
       const response = await request(app)
-        .post('/api/ingest')
+        .post('/ingest')
         .send({
           ids: largeIds,
           priority: 'HIGH'
@@ -258,7 +258,7 @@ describe('Data Ingestion API', () => {
       expect(response.body).toHaveProperty('ingestion_id');
 
       // Verify that IDs are properly batched
-      const status = await request(app).get(`/api/status/${response.body.ingestion_id}`);
+      const status = await request(app).get(`/status/${response.body.ingestion_id}`);
       expect(status.body.batches.length).toBeGreaterThan(1);
       expect(status.body.batches.every(batch => batch.ids.length <= 10)).toBe(true);
     });
