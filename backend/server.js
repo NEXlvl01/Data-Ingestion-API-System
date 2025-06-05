@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/api', (req, res) => {
+app.get('/api/', (req, res) => {
   res.json({
     message: 'Welcome to Data Ingestion API System',
     version: '1.0.0',
