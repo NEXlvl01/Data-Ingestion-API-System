@@ -12,12 +12,6 @@
       "destination": "/api",
       "permanent": true
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
   ]
 }
 
