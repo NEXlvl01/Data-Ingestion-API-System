@@ -15,15 +15,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
 // Welcome message route
+=======
+>>>>>>> fc8e7840ba819b00b155a35416ab5ae568f84472
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to Data Ingestion API System',
     version: '1.0.0',
     endpoints: {
       health: '/health',
+<<<<<<< HEAD
       ingest: '/ingest',
       status: '/status/:ingestion_id'
+=======
+      ingest: '/api/ingest',
+      status: '/api/status/:ingestion_id'
+>>>>>>> fc8e7840ba819b00b155a35416ab5ae568f84472
     },
     documentation: 'API documentation will be available soon'
   });
