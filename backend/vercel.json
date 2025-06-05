@@ -6,11 +6,18 @@
       "use": "@vercel/node"
     }
   ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/api",
+      "permanent": true
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
       "dest": "server.js"
     }
   ]
-} 
+}
 
