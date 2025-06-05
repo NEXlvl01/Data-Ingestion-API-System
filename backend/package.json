@@ -31,5 +31,8 @@
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 30000
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }

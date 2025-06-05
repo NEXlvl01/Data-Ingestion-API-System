@@ -15,6 +15,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // MongoDB Connection
 const connectDB = async () => {
   try {
@@ -35,19 +40,22 @@ const connectDB = async () => {
   }
 };
 
-// Connect to MongoDB
-connectDB();
-
 // Routes
 app.use('/api', ingestionRoutes);
 
-// Export app for testing
-module.exports = app;
+// Connect to MongoDB and start server
+const PORT = process.env.PORT || 5000;
 
-// Only start the server if not in test environment
-if (process.env.NODE_ENV !== 'test') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+// Only start the server if we're not in a Vercel environment
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    await connectDB();
     console.log(`Server is running on port ${PORT}`);
   });
-} 
+} else {
+  // For Vercel, just connect to MongoDB
+  connectDB();
+}
+
+// Export the Express API
+module.exports = app; 
